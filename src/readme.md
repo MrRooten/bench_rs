@@ -1,0 +1,1 @@
+snippets code for benchmarking different ways of implementation in Rust.
