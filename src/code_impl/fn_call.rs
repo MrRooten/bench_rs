@@ -70,6 +70,12 @@ fn closure_call(f: &dyn Fn(i32) -> i32, a: i32) -> i32 {
     f(a)
 }
 
+#[inline(never)]
+fn multi_args_call<F: Fn(i32, i32, i32) -> i32>(f: F, a: i32) -> i32 {
+    f(a, a, a)
+}
+
+
 fn bench(name: &str, mut f: impl FnMut()) {
     let start = Instant::now();
     f();
@@ -122,6 +128,12 @@ fn run() {
     bench("closure", || {
         for _ in 0..N {
             x = black_box(closure_call(&closure, x));
+        }
+    });
+
+    bench("multi args", || {
+        for _ in 0..N {
+            x = black_box(multi_args_call(|a, b, c| a + b + c, x));
         }
     });
 
