@@ -1,6 +1,7 @@
 pub mod match_table;
 pub mod fn_call;
 pub mod cache_vs_no;
+pub mod vec_size;
 pub trait SnipptBench {
     fn run(&self);
 
