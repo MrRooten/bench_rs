@@ -1,5 +1,5 @@
-use std::time::Instant;
 use crate::code_impl::SnipptBench;
+use std::time::Instant;
 
 const N: usize = 5_000_000;
 
@@ -27,7 +27,12 @@ impl VecStructBench {
     fn bench_vec_struct() {
         let mut v = Vec::with_capacity(N);
         for i in 0..N {
-            v.push(BigStruct { a: i as u64, b: i as u64, c: [0; 256], d: i as u64 });
+            v.push(BigStruct {
+                a: i as u64,
+                b: i as u64,
+                c: [1; 256],
+                d: i as u64,
+            });
         }
         let start = Instant::now();
         let sum: u64 = v.iter().map(|x| x.a + x.b + x.c[0] as u64 + x.d).sum();
@@ -38,12 +43,20 @@ impl VecStructBench {
     fn bench_vec_boxed_struct() {
         let mut v = Vec::with_capacity(N);
         for i in 0..N {
-            v.push(Box::new(BigStruct { a: i as u64, b: i as u64, c: [0; 256], d: i as u64 }));
+            v.push(Box::new(BigStruct {
+                a: i as u64,
+                b: i as u64,
+                c: [1; 256],
+                d: i as u64,
+            }));
         }
         let start = Instant::now();
         let sum: u64 = v.iter().map(|x| x.a + x.b + x.c[0] as u64 + x.d).sum();
         let elapsed = start.elapsed();
-        println!("Vec<Box<BigStruct>> iterate+access: {:?}, sum={}", elapsed, sum);
+        println!(
+            "Vec<Box<BigStruct>> iterate+access: {:?}, sum={}",
+            elapsed, sum
+        );
     }
 
     fn bench_vec_partial_box() {
@@ -52,14 +65,17 @@ impl VecStructBench {
             v.push(PartialBoxStruct {
                 a: i as u64,
                 b: i as u64,
-                c: Box::new([0; 256]),
+                c: Box::new([1; 256]),
                 d: i as u64,
             });
         }
         let start = Instant::now();
         let sum: u64 = v.iter().map(|x| x.a + x.b + x.c[0] as u64 + x.d).sum();
         let elapsed = start.elapsed();
-        println!("Vec<PartialBoxStruct> iterate+access: {:?}, sum={}", elapsed, sum);
+        println!(
+            "Vec<PartialBoxStruct> iterate+access: {:?}, sum={}",
+            elapsed, sum
+        );
     }
 }
 
@@ -67,29 +83,50 @@ impl VecAccessBench {
     fn bench_access_struct() {
         let mut v = Vec::with_capacity(N);
         for i in 0..N {
-            v.push(BigStruct { a: i as u64, b: i as u64, c: [0; 256], d: i as u64 });
+            v.push(BigStruct {
+                a: i as u64,
+                b: i as u64,
+                c: [1; 256],
+                d: i as u64,
+            });
         }
         let start = Instant::now();
         let mut sum = 0u64;
-        for i in (0..N).step_by(1000) {
-            sum += v[i].c[128] as u64;
+        for base in 0..1000 {
+            for i in (base..N).step_by(1000) {
+                sum += v[i].c[128] as u64;
+            }
         }
         let elapsed = start.elapsed();
-        println!("Vec<BigStruct> random access large field: {:?}, sum={}", elapsed, sum);
+        println!(
+            "Vec<BigStruct> random access large field: {:?}, sum={}",
+            elapsed, sum
+        );
     }
 
     fn bench_access_boxed_struct() {
         let mut v = Vec::with_capacity(N);
         for i in 0..N {
-            v.push(Box::new(BigStruct { a: i as u64, b: i as u64, c: [0; 256], d: i as u64 }));
+            v.push(Box::new(BigStruct {
+                a: i as u64,
+                b: i as u64,
+                c: [1; 256],
+                d: i as u64,
+            }));
         }
         let start = Instant::now();
         let mut sum = 0u64;
-        for i in (0..N).step_by(1000) {
-            sum += v[i].c[128] as u64;
+        for base in 0..1000 {
+            for i in (base..N).step_by(1000) {
+                sum += v[i].c[128] as u64;
+            }
         }
+
         let elapsed = start.elapsed();
-        println!("Vec<Box<BigStruct>> random access large field: {:?}, sum={}", elapsed, sum);
+        println!(
+            "Vec<Box<BigStruct>> random access large field: {:?}, sum={}",
+            elapsed, sum
+        );
     }
 
     fn bench_access_partial_box() {
@@ -98,17 +135,22 @@ impl VecAccessBench {
             v.push(PartialBoxStruct {
                 a: i as u64,
                 b: i as u64,
-                c: Box::new([0; 256]),
+                c: Box::new([1; 256]),
                 d: i as u64,
             });
         }
         let start = Instant::now();
         let mut sum = 0u64;
-        for i in (0..N).step_by(1000) {
-            sum += v[i].c[128] as u64;
+        for base in 0..1000 {
+            for i in (base..N).step_by(1000) {
+                sum += v[i].c[128] as u64;
+            }
         }
         let elapsed = start.elapsed();
-        println!("Vec<PartialBoxStruct> random access large field: {:?}, sum={}", elapsed, sum);
+        println!(
+            "Vec<PartialBoxStruct> random access large field: {:?}, sum={}",
+            elapsed, sum
+        );
     }
 }
 
