@@ -1,4 +1,4 @@
-use bench_rs::code_impl::{SnipptBench, cache_vs_no::CacheVsNoBench, fn_call::CallOverHead, list_vs_ptr::ListVsPtrBench, match_table::MatchTableBench, vec_size::{VecAccessBench, VecStructBench}};
+use bench_rs::code_impl::{SnipptBench, cache_vs_no::CacheVsNoBench, fn_call::CallOverHead, list_vs_ptr::ListVsPtrBench, match_table::MatchTableBench, result_or_not::ResultOrNotBench, vec_size::{VecAccessBench, VecStructBench}};
 
 
 
@@ -11,6 +11,7 @@ pub fn main() {
     benches.push(Box::new(VecStructBench {}));
     benches.push(Box::new(VecAccessBench {}));
     benches.push(Box::new(ListVsPtrBench {}));
+    benches.push(Box::new(ResultOrNotBench {}));
 
     for bench in benches.iter() {
         println!("Running benchmark: {}", bench.description());

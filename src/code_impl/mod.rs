@@ -3,6 +3,7 @@ pub mod fn_call;
 pub mod cache_vs_no;
 pub mod vec_size;
 pub mod list_vs_ptr;
+pub mod result_or_not;
 pub trait SnipptBench {
     fn run(&self);
 
