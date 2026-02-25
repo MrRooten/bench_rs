@@ -1,7 +1,7 @@
 use crate::code_impl::SnipptBench;
 use std::time::Instant;
 
-const N: usize = 5_000_000;
+const N: usize = 5_000_00;
 
 #[derive(Clone)]
 struct BigStruct {

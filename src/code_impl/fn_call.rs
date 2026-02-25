@@ -83,11 +83,30 @@ fn bench(name: &str, mut f: impl FnMut()) {
     println!("{:<25} {:?}", name, elapsed);
 }
 
+struct MethodCall;
+
+impl MethodCall {
+    #[inline(never)]
+    fn method(&self, a: i32) -> i32 {
+        a + 1
+    }
+
+    #[inline(always)]
+    fn method_inline(&self, a: i32) -> i32 {
+        a + 1
+    }
+}
 
 fn run() {
     let mut x = 0;
     let add = Add;
     let closure = |a| a + 1;
+
+    bench("baseline", || {
+        for _ in 0..N {
+            x = black_box(x + 1);
+        }
+    });
 
     bench("direct fn", || {
         for _ in 0..N {
@@ -134,6 +153,19 @@ fn run() {
     bench("multi args", || {
         for _ in 0..N {
             x = black_box(multi_args_call(|a, b, c| a + b + c, x));
+        }
+    });
+
+    let method_call = MethodCall;
+    bench("method call", || {
+        for _ in 0..N {
+            x = black_box(method_call.method(x));
+        }
+    });
+
+    bench("method call inline", || {
+        for _ in 0..N {
+            x = black_box(method_call.method_inline(x));
         }
     });
 
